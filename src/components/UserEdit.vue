@@ -65,7 +65,7 @@
 <script type="text/javascript">
 	export default {
 		name: 'UserEdit',
-		props: ['user'],
+		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
 			/*user: {
@@ -82,7 +82,7 @@
 		},
 	    methods: {
 	        saveUser: function(){
-	            this.axios.put('http://localhost:7555/api/user/edit/' +this.user.id,
+	            this.axios.put(this.serverIp + '/api/user/edit/' +this.user.id,
 	            	this.user,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
@@ -93,7 +93,7 @@
 		                	console.log(response);
 	                });
 	                if(this.isChangePassword){
-		            this.axios.put('http://localhost:7555/api/user/edit/password/' +this.user.id,
+		            this.axios.put(this.serverIp + '/api/user/edit/password/' +this.user.id,
 		            	{password: this.password},
 	            		{ headers: { Authorization: "Bearer " + this.user.token } })
 		                .then(response=>{
@@ -122,7 +122,7 @@
 	        	this.isChangePassword = !this.isChangePassword;
 	        },
 	        deleteUser(){
-	        	this.axios.delete('http://localhost:7555/api/user/delete/' +this.user.id,  
+	        	this.axios.delete(this.serverIp + '/api/user/delete/' +this.user.id,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	Object.assign(this.user, response.data.data);
@@ -131,14 +131,14 @@
 	                });
 	        },
 	        cancelEdit: function(){
-	        	axios.get('api/users/'+this.user.id)
+	        	axios.get(this.serverIp + 'api/users/'+this.user.id)
 	                .then(response=>{
 	                	Object.assign(this.user, response.data.data);
 	                	this.$emit('user-canceled', this.user);
 	                });
 	        },
 	        getUserByToken: function(){
-	        	this.axios.get('http://localhost:7555/api/user/'+this.user.token, 
+	        	this.axios.get(this.serverIp + '/api/user/'+this.user.token, 
 					{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	// Copy object properties from response.data.data to this.user

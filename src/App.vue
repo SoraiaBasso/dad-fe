@@ -36,6 +36,7 @@
     :user="user" :isLoggedIn="isLoggedIn"
     :pendingGames="pendingGames" :activeGames="activeGames"
     :cardImages="cardImages"
+    :serverIp="serverIp"
     ></router-view>
 
    </div>
@@ -51,11 +52,12 @@ export default {
         pendingGames: this.$root.pendingGames,
         activeGames: this.$root.activeGames,
         cardImages: this.$root.cardImages,
+        serverIp: this.$root.serverIp,
         isLoggedIn:false}
     },
     methods: {
       doLogout: function() {
-        this.axios.post('http://localhost:7555/logout',
+        this.axios.post(this.serverIp +'/logout',
           { token: this.user.token })
           .then(response => {
             console.log(response);

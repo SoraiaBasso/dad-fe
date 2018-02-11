@@ -1,5 +1,8 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+//varivel que contem o ip do servidor
+const serverIp = "http://46.101.25.53:7555";
+
 
 import Vue from 'vue';
 import App from './App';
@@ -230,7 +233,8 @@ var vm = new Vue({
 		user: user,
 		pendingGames: pendingGames, //a variavel e declarada nesta instancia ja inicializada com os valores recebidos
 		activeGames: activeGames,
-		cardImages: cardImages
+		cardImages: cardImages,
+		serverIp: serverIp
 	},
 	template: '<App/>',
 	components: {
@@ -244,7 +248,7 @@ var vm = new Vue({
 			console.log(store.getters.getUser);
 			if (store.getters.getUser.token) {
 				//envia um pedido de conexão ao servidor
-				socket = io('http://localhost:7555', {
+				socket = io(serverIp, {
 					forceNew: true
 				});
 				initListeners(socket);

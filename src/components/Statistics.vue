@@ -112,7 +112,7 @@
 <script type="text/javascript">
 	export default {
 		name: 'Statistics',
-		props: ['user',  'isLoggedIn'],
+		props: ['user',  'isLoggedIn', 'serverIp'],
 		//props: ['users'],
 		data: function(){
 			return { 
@@ -132,7 +132,7 @@
 		},
 		methods: {
              listTopFiveUsersByNumOfGames: function(){
-				this.axios.get('http://localhost:7555/api/statistics/topFiveByNumOfGames')
+				this.axios.get(this.serverIp +'/api/statistics/topFiveByNumOfGames')
 	                .then(response=>{
 	                	//Mostra a resposta no log
 						console.log(response);
@@ -147,7 +147,7 @@
 	                });
 			},
 			getTotalNumberOfPlayers: function(){
-				this.axios.get('http://localhost:7555/api/statistics/numberOfPlayers')
+				this.axios.get(this.serverIp +'/api/statistics/numberOfPlayers')
 	                .then(response=>{
 	                	console.log('RESPOSTA numero de jogadores:')
 	                	console.log(response.data)
@@ -158,14 +158,14 @@
 	                });
 			},
 			getTotalGamesPlayed: function(){
-				this.axios.get('http://localhost:7555/api/statistics/totalGamesPlayed')
+				this.axios.get(this.serverIp +'/api/statistics/totalGamesPlayed')
 	                .then(response=>{
 	                	console.log(response.data)
 	                	this.totalGamesPlayed = response.data.count;
 	                });
 			},
 			getTopFiveUsersByPoints: function(){
-				this.axios.get('http://localhost:7555/api/statistics/topFiveByPoints')
+				this.axios.get(this.serverIp +'/api/statistics/topFiveByPoints')
 	                .then(response=>{
 	                	//Mostra a resposta no log
 						console.log(response);
@@ -176,7 +176,7 @@
 	                });
 			},
 			getTopFiveUsersByAverage: function(){
-				this.axios.get('http://localhost:7555/api/statistics/topFiveByAverage')
+				this.axios.get(this.serverIp +'/api/statistics/topFiveByAverage')
 	                .then(response=>{
 	                	//Mostra a resposta no log
 						console.log(response);
@@ -190,7 +190,7 @@
 	                });
 			}, //Métodos só para o utilizador autenticado
 			getOwnTotalWins: function(){
-				this.axios.get('http://localhost:7555/api/statistics/user/totalWins/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/user/totalWins/' + this.user.id,
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -199,7 +199,7 @@
 			},
 			getOwnTotalLosts: function(){
 				console.log('PEDIR O TOTAL DE DERROTAS...');
-				this.axios.get('http://localhost:7555/api/statistics/user/totalLosts/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/user/totalLosts/' + this.user.id,
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -208,7 +208,7 @@
 	                });
 			},
 			getOwnTotalDraws: function(){
-				this.axios.get('http://localhost:7555/api/statistics/user/totalDraws/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/user/totalDraws/' + this.user.id,
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 

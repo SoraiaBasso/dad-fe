@@ -35,7 +35,7 @@
 <script type="text/javascript">
 	export default {
 		name: 'Login',
-		props: ['user'],
+		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
 				login: '',
@@ -46,7 +46,7 @@
 		},
 	    methods: {
 	        doLogin: function(){
-	            this.axios.post('http://localhost:7555/login', 
+	            this.axios.post(this.serverIp +'/login', 
 	            	{username: this.login, password: this.password})
 	                .then(response=>{
 	                	console.log(response);

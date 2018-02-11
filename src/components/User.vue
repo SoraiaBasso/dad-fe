@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<user-list :users="users" :user="user" @details-click="detailsUser" @delete-click="deleteUser" @message="childMessage" ref="usersListRef"></user-list>
+		<user-list :users="users" :user="user" :serverIp="serverIp" @details-click="detailsUser" @delete-click="deleteUser" @message="childMessage" ref="usersListRef"></user-list>
 
 
 	  <b-alert v-if="showSuccess" show dismissible variant="success">
@@ -13,7 +13,7 @@
 	<!--
 		<user-create></user-create>
 -->
-		<user-details :user="currentUser" v-if="currentUser"></user-details>	
+		<user-details :user="currentUser" :serverIp="serverIp" v-if="currentUser"></user-details>	
 
 	<!--	<div>
 			<user-details :user="currentUser"  @details-click="detailsUser"></user-details>	
@@ -29,7 +29,7 @@
 	import UserDetails from './UserDetails.vue';
 	
 	export default {
-		props: ['user'],
+		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
 		        showSuccess: false,
@@ -51,7 +51,7 @@
 	        },
 	        /*DUVIDA - devo fazer as coisas aqui no pai ou no list users?*/
 	        deleteUser: function(user){
-	            axios.delete('api/users/'+user.id)
+	            axios.delete(this.serverIp + '/api/users/'+user.id)
 	                .then(response => {
 	                    this.showSuccess = true;
 	                    this.successMessage = 'User Deleted';
@@ -72,7 +72,7 @@
 	        getUsers: function(){
 	        	//Faz um pedido ao Servidor para ir buscar os users
 				
-				this.axios.get('http://localhost:7555/api/users', 
+				this.axios.get(this.serverIp +'/api/users', 
 					{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	//Mostra a resposta no log

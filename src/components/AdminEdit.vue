@@ -158,7 +158,7 @@
 <script type="text/javascript">
 	export default {
 		name: 'UserEdit',
-		props: ['user'],
+		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
 				config: {
@@ -184,7 +184,7 @@
 		},
 	    methods: {
 	        saveUser: function(){
-	            this.axios.put('http://localhost:7555/api/admin/edit/' +this.user.id,
+	            this.axios.put(this.serverIp +'/api/admin/edit/' +this.user.id,
 	            	this.user,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
@@ -201,7 +201,7 @@ this.axios.interceptors.request.use(request => {
   return request
 })*/
 
-		            this.axios.put('http://localhost:7555/api/admin/edit/password/' +this.user.id,
+		            this.axios.put(this.serverIp +'/api/admin/edit/password/' +this.user.id,
 		            	{oldPassword: this.oldPassword, newPassword: this.newPassword},
 	            		{ headers: { Authorization: "Bearer " + this.user.token } })
 		                .then(response=>{
@@ -221,7 +221,7 @@ this.axios.interceptors.request.use(request => {
 	       
 	        //fazer a api ???
 	        cancelEdit: function(){
-	        	axios.get('api/users/'+this.user.id)
+	        	axios.get(this.serverIp + 'api/users/'+this.user.id)
 	                .then(response=>{
 	                	// Copy object properties from response.data.data to this.user
 	                	// without creating a new reference
@@ -240,7 +240,7 @@ this.axios.interceptors.request.use(request => {
 	                });
 	        },*/
 	        getConfigDetails: function(){
-	        	this.axios.get('http://localhost:7555/api/admin/config/details', 
+	        	this.axios.get(this.serverIp + '/api/admin/config/details', 
 					{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -266,7 +266,7 @@ this.axios.interceptors.request.use(request => {
 
 	//TODO : validacao se existe ficheiro para ulpoad ou nao - vai dar problemas na publicacao
         	
-	        	this.axios.post('http://localhost:7555/upload', formData,
+	        	this.axios.post(this.serverIp + '/upload', formData,
 					{ headers: { Authorization: "Bearer " + this.user.token,
 								 'Content-Type': 'multipart/form-data'} })
 	                .then(response=>{
@@ -295,7 +295,7 @@ this.axios.interceptors.request.use(request => {
 				  formData.append('files[' + i + ']', file);
 				}
 
-				this.axios.post( 'http://localhost:7555/upload/multiple/cards', formData,
+				this.axios.post(this.serverIp + '/upload/multiple/cards', formData,
 				  {headers: { Authorization: "Bearer " + this.user.token,
 								 'Content-Type': 'multipart/form-data'}}).then(function(response){
 

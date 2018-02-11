@@ -76,7 +76,7 @@
 
 	export default {
 		name: 'UserList',
-		props: ['users', 'user'],
+		props: ['users', 'user', 'serverIp'],
 		data: function(){
 			return { 
 				/*user: {
@@ -104,7 +104,7 @@
 
         methods: {
             blockUser: function(user){
-            	this.axios.put('http://localhost:7555/api/admin/block/user/' +user.id, 
+            	this.axios.put(this.serverIp + '/api/admin/block/user/' +user.id, 
             		{reason_blocked: this.reasonBlocked}, 
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
@@ -117,7 +117,7 @@
 	               
             },
             unblockUser: function(user){
-            	this.axios.put('http://localhost:7555/api/admin/unblock/user/' +user.id,
+            	this.axios.put(this.serverIp + '/api/admin/unblock/user/' +user.id,
             		{reason_reactivated: this.reasonUnblocked},  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
@@ -135,7 +135,7 @@
 })*/
             	console.log(this.user.token)
             	console.log(this.user)
-            	this.axios.delete('http://localhost:7555/api/admin/delete/user/' +user.id,  
+            	this.axios.delete(this.serverIp + '/api/admin/delete/user/' +user.id,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	Object.assign(this.user, response.data.data);

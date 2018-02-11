@@ -69,7 +69,7 @@
 <script type="text/javascript">
 	export default {
 		name: 'UserCreate',
-		//props: ['user'],
+		props: ['serverIp'],
 		data: function(){
 			return { 
 				user: {
@@ -86,7 +86,7 @@
 		},
 	    methods: {
 	        saveUser: function(){
-	            this.axios.post('http://localhost:7555/api/users/create', this.user)
+	            this.axios.post(this.serverIp + '/api/users/create', this.user)
 	                .then(response=>{
 	                	console.log(response);
 
