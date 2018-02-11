@@ -37,7 +37,7 @@
 
 <script type="text/javascript">
 
-	import Gamelist from './Gamelist.vue';
+	import Gamelist from './GameList.vue';
 	import Game from './Game.vue';
 
 	export default {
