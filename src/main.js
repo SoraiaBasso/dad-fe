@@ -1,8 +1,8 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 //varivel que contem o ip do servidor
-const serverIp = "http://46.101.25.53:8080";
-//const serverIp = "http://localhost:7555";
+//const serverIp = "http://46.101.25.53:8080";
+const serverIp = "http://localhost:7555";
 
 
 import Vue from 'vue';
@@ -22,10 +22,9 @@ Vue.use(VueAxios, axios);
 import VeeValidate from 'vee-validate';
 
 Vue.use(VeeValidate, {fieldsBagName: 'formFields'})
-
+/*
 import Paginate from 'vuejs-paginate'
-Vue.component('paginate', Paginate)
-
+Vue.component('paginate', Paginate)*/
 
 import Vuex from 'vuex'
 import {
@@ -33,9 +32,6 @@ import {
 } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import * as Cookies from 'js-cookie'
-
-
-
 
 Vue.use(Vuex);
 
@@ -69,8 +65,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import io from 'socket.io-client';
 
 let socket = null;
-
-//const createUser = Vue.component('createUser', require('./components/UserCreate.vue'));
 
 const routes = [{
 	path: '/',
@@ -170,22 +164,16 @@ function initListeners(s) {
 	});
 	s.on('activeGames', function(data) {
 		console.log('Cliente active games')
-		console.log('Cliente active games')
-		console.log('Cliente active games')
-		//receber os games que vieram no canal
-		activeGames.splice(0, activeGames.length); //faz reset ao array
+		activeGames.splice(0, activeGames.length); 
 		activeGames.push.apply(activeGames, data.games);
 		console.log("Active Games:", activeGames);
 	});
 	s.on('cardImages', function(data) {
 
-
-		console.log("data RECEBIDA  no main:");
 		console.log("data RECEBIDA  no main:");
 		console.log("buffer RECEBIDA  no main:", data);
 
 		var isDeckPresent = false;
-
 
 		for (var i = 0; i < cardImages.length; i++) {
 			var deck = cardImages[i];
@@ -203,12 +191,8 @@ function initListeners(s) {
 						if(!alreadyExists) {
 							deck.cards.push(receivedCard);
 						}
-
 					}
-
-
 				}
-
 				break;
 			}
 		}
@@ -220,35 +204,16 @@ function initListeners(s) {
 		cardImages.splice(0, cardImages.length);
 		cardImages.push.apply(cardImages, [data]);
 		console.log("buffer RECEBIDA  no main:", cardImages);
-		/*var ctx = document.getElementById('canvas').getContext('2d');
-		if (data.image) {
-			var img = new Image();
-			img.src = 'data:image/jpeg;base64,' + data.buffer;
-			ctx.drawImage(img, 0, 0);
-		} */
-
-
-/*
-		cardImages.splice(0, cardImages.length);
-		cardImages.push.apply(cardImages, data.cards);
-		console.log("Imagens das cartas recebidas no main:", cardImages);
-		console.log("Imagens das cartas recebidas no main:", cardImages[0]);*/
 
 	});
 	s.on('gameOver', function(data) {
-		//receber os games que vieram no canal
-		console.log('data')
-		console.log(data)
-		//gameOver = data.game;
+		//console.log('data')
+		//console.log(data)
 		gamesOver.splice(0, gamesOver.length);
 
 		let gameOver = data.game;
 		gameOver.teamWinner = data.teamWinner;
 		gamesOver.push(gameOver);
-
-		//activeGames.splice(0, activeGames.length); //faz reset ao array
-		//activeGames.push.apply(activeGames, data.games);
-		//console.log("Active Games:", activeGames);
 	});
 }
 
@@ -259,7 +224,7 @@ var vm = new Vue({
 	router: router,
 	data: {
 		user: user,
-		pendingGames: pendingGames, //a variavel e declarada nesta instancia ja inicializada com os valores recebidos
+		pendingGames: pendingGames, 
 		activeGames: activeGames,
 		cardImages: cardImages,
 		serverIp: serverIp,
@@ -286,7 +251,7 @@ var vm = new Vue({
 						token: store.getters.getUser.token
 					});
 					socket.on('authenticated', function() {
-						// use the socket as usual 
+						// fazer as coisas normalmente
 					});
 				});
 			}
@@ -324,8 +289,6 @@ var vm = new Vue({
 				gameId: gameId,
 				userId: store.getters.getUser.id
 			});
-
-			//socket.emit('fisrtPlayer', {gameId:gameId}); 
 		},
 		removeGame(gameId) {
 			socket.emit('removePendingGame', {
@@ -356,7 +319,7 @@ var vm = new Vue({
 router.beforeEach((to, from, next) => {
 	const currentUser = store.getters.getUser;
 
-	var loggedRoutes = ["UserEdit", "Users", "AdminEdit", "Lobby"];
+	var loggedRoutes = ["UserEdit", "Users", "AdminEdit", "Lobby", "Decks"];
 	//Se o nome da routa for uma das rotas de Logado
 	if (loggedRoutes.indexOf(to.name) > -1) {
 		if (!currentUser.token) {

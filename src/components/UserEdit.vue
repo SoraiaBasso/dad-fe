@@ -82,7 +82,7 @@
 		},
 	    methods: {
 	        saveUser: function(){
-	            this.axios.put(this.serverIp + '/api/user/edit/' +this.user.id,
+	            this.axios.put(this.serverIp + '/api/users/' +this.user.id,
 	            	this.userUpdated,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
@@ -96,7 +96,7 @@
 
 	                });
 	                if(this.isChangePassword){
-		            this.axios.put(this.serverIp + '/api/user/edit/password/' +this.user.id,
+		            this.axios.put(this.serverIp + '/api/users/password/' +this.user.id,
 		            	{password: this.password},
 	            		{ headers: { Authorization: "Bearer " + this.user.token } })
 		                .then(response=>{
@@ -125,7 +125,7 @@
 	        	this.isChangePassword = !this.isChangePassword;
 	        },
 	        deleteUser(){
-	        	this.axios.delete(this.serverIp + '/api/user/delete/' +this.user.id,  
+	        	this.axios.delete(this.serverIp + '/api/users/' +this.user.id,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	Object.assign(this.user, response.data.data);
@@ -140,16 +140,12 @@
 	        	this.axios.get(this.serverIp + '/api/user/'+this.user.token, 
 					{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
-	                	// Copy object properties from response.data.data to this.user
-	                	// without creating a new reference
 	                	Object.assign(this.user, response.data);
 	                	console.log(response);
 	                });
 	        }
 		},
 		mounted() {
-	    	//O metodo mounted() vai ser executado quando a página estiver pronta
-			//this.getUserByToken();
 			Object.assign(this.userUpdated, this.user);
 		}
 

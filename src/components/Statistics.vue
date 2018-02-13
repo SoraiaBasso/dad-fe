@@ -7,7 +7,7 @@
 			<h2><b-badge variant="warning">Total games played: {{totalGamesPlayed}}</b-badge></h2>
 		</div>
 
-<!--mostra o total de jogos jogados pelo utilizador que está logado-->
+<!-- Mostra a informação para o user que está logado-->
 	<div v-if="isLoggedIn" class="form-group">
 	        <h4>You have played <strong>{{user.total_games_played}}</strong> games!</h4>
 
@@ -37,7 +37,7 @@
 	    </thead>
 	    <tbody>
 	        <tr v-for="user, key in newUsersByGames" :users="users" :key="user.id">
-	        	<td >{{++key}}</td>  <!--posicao do jogador de1 a 5  fazer um order by -->
+	        	<td >{{++key}}</td>  
 	            <td>{{ user.nickname }}</td>
 	            <td>{{ user.total_games_played }}</td>
 	            
@@ -51,14 +51,14 @@
 	<table class="table table-striped">
 	    <thead>
 	        <tr>
-	        	<th>Position</th> <!--posicao do jogador de1 a 5 -->
+	        	<th>Position</th> 
 	            <th>Nickname</th>
 	            <th>Total points</th>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <tr v-for="user, key in newUsersByPoints" :users="users" :key="user.id">
-	        	<td >{{++key}}</td>  <!--posicao do jogador de1 a 5  fazer um order by -->
+	        	<td >{{++key}}</td>  
 	            <td>{{ user.nickname }}</td>
 	            <td>{{ user.total_points }}</td>
 	            
@@ -72,14 +72,14 @@
 	<table class="table table-striped">
 	    <thead>
 	        <tr>
-	        	<th>Position</th> <!--posicao do jogador de1 a 5 -->
+	        	<th>Position</th> 
 	            <th>Nickname</th>
 	            <th>Average</th>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <tr v-for="user, key  in newUsersByAverage" :users="users" :key="user.id">
-	        	<td >{{++key}}</td>  <!--posicao do jogador de1 a 5  fazer um order by -->
+	        	<td >{{++key}}</td>  
 	            <td>{{ user.nickname }}</td>
 	            <td>{{ user.avg }}</td>
 	            
@@ -87,7 +87,7 @@
 	    </tbody>
 	</table>
 
-<!--SO PARA O ADMIN : fazer esta restricao-->
+<!--SÓ PARA O ADMINISTRADOR-->
 
 <!--lista de todos os jogadores com o total de jogos, vitorias, empates e derrotas-->
 
@@ -165,26 +165,15 @@
 				currentTablePage: 1,
         		gamesHistoryData: null
 			}
-		}, /*
-		computed: {
-		    filteredUsersByGames: function(){
-		        return this.newUsersByGames.slice(0, 3);
-		    }
-		}, */
+		}, 
 		methods: {
              listTopFiveUsersByNumOfGames: function(){
 				this.axios.get(this.serverIp +'/api/statistics/topFiveByNumOfGames')
 	                .then(response=>{
-	                	//Mostra a resposta no log
-						console.log(response);
-						//var myArray = {p1:'1º', p2: '2º', p3: '3º', p4: '4º', p5: '5º'};
-						//Object.assign(this.user, response.data.data);
+
 	                	this.users = response.data; 
 	                	this.newUsersByGames = this.users.slice();
 
-	                	/*for(var i = 0; i< this.auxUsers.length(); i++){
-	                		this.newUsers.push(i: this.auxUsers[i]);
-	                	}*/
 	                });
 			},
 			getTotalNumberOfPlayers: function(){
@@ -195,7 +184,6 @@
 	                	this.totalNumberPlayers = response.data.count;
 
 	                	console.log(response.data)
-	                	/*this.totalNumberPlayers = response.data;*/
 	                });
 			},
 			getTotalGamesPlayed: function(){
@@ -208,10 +196,6 @@
 			getTopFiveUsersByPoints: function(){
 				this.axios.get(this.serverIp +'/api/statistics/topFiveByPoints')
 	                .then(response=>{
-	                	//Mostra a resposta no log
-						console.log(response);
-
-						//Object.assign(this.user, response.data.data);
 	                	this.users = response.data;
 	                	this.newUsersByPoints = this.users.slice(); 
 	                });
@@ -219,20 +203,16 @@
 			getTopFiveUsersByAverage: function(){
 				this.axios.get(this.serverIp +'/api/statistics/topFiveByAverage')
 	                .then(response=>{
-	                	//Mostra a resposta no log
 						console.log("topFiveByAverage");
 						console.log(response);
 
-						//Object.assign(this.user, response.data.data);
 	                	this.users = response.data;
 	                	this.newUsersByAverage = this.users.slice(); 
-
-	                	//TODO **************MPOSTRAR A MEDIA DE CADA JOGADOR
 
 	                });
 			}, //Métodos só para o utilizador autenticado
 			getOwnTotalWins: function(){
-				this.axios.get(this.serverIp + '/api/statistics/user/totalWins/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/users/' + this.user.id + '/totalWins/',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 						console.log("totalWins");
@@ -243,7 +223,7 @@
 			},
 			getOwnTotalLosts: function(){
 				console.log('PEDIR O TOTAL DE DERROTAS...');
-				this.axios.get(this.serverIp + '/api/statistics/user/totalLosts/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/users/' + this.user.id + '/totalLosses/',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -253,7 +233,7 @@
 	                });
 			},
 			getOwnTotalDraws: function(){
-				this.axios.get(this.serverIp + '/api/statistics/user/totalDraws/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/users/' + this.user.id + '/totalDraws/',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -263,7 +243,7 @@
 	                });
 			},
 			getOwnTotalPoints: function(){
-				this.axios.get(this.serverIp + '/api/statistics/user/totalPoints/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/users/'+ this.user.id + '/totalPoints/',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -273,7 +253,7 @@
 	                });
 			},
 			getOwnPointAverage: function(){
-				this.axios.get(this.serverIp + '/api/statistics/user/pointAverage/' + this.user.id,
+				this.axios.get(this.serverIp + '/api/statistics/users/' + this.user.id + '/pointAverage/',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 
@@ -294,7 +274,7 @@
 						this.usersForAdmin.push.apply(this.usersForAdmin, response.data);
 	                	
 	                });
-			},//Métodos só para o admin
+			},
 			getGamesHistoryData: function(){
 				this.axios.get(this.serverIp + '/api/statistics/admin/gamesHistoryData',
 							{ headers: { Authorization: "Bearer " + this.user.token } })
@@ -315,7 +295,6 @@
 	                	}
 
 	                	this.fillData(days, counts);
-
 	                	
 	                });
 			},
@@ -349,15 +328,11 @@
 				this.getOwnPointAverage();	
 			}
 
-			//VERIFY ADMIN PLEASE!
 
 			if(this.isLoggedIn && this.user.admin){
 				this.getUsersForAdmin();
 				this.getGamesHistoryData();
 			}
-			/*if (this.isLoggedIn && (this.user.admin == 1)){
-				this.getUsersForAdmin();
-			} */
 		}	
 	}
 </script>

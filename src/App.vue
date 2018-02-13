@@ -21,7 +21,6 @@
         <router-link to="/users/create" v-if="!isLoggedIn" class="nav-link">Register</router-link>
         <router-link to="/login" v-if="!isLoggedIn" class="nav-link">Login</router-link>
 
-<!-- TODO so mostra este link se quem esta logado for o admin-->
         <router-link to="/admin/edit" v-if="isLoggedInAndAdmin()" class="nav-link">Admin Area</router-link>
         <router-link to="/decks" v-if="isLoggedInAndAdmin()" class="nav-link">Decks</router-link>
 
@@ -36,8 +35,7 @@
   </b-modal>
 
 
-  <!-- O :user serve para passar a variavel user (declarade neste componente pai) para os componentes filhos
-  essa var tem que ser declarada nos props[] do filho que a vai usar -->
+  <!-- Passamos as var~iáveis declaradas no main js para os componentes filhos -->
   <router-view @is-logged="isLogged" 
     :user="user" :isLoggedIn="isLoggedIn"
     :pendingGames="pendingGames" :activeGames="activeGames"
@@ -155,8 +153,6 @@ export default {
           return this.isLoggedIn && this.user.admin == 0; 
       },
       resetGameOver () {
-        //Object.assign(this.gameOver, {});
-        //this.$refs.gameOverModalRef.hide();
         this.$root.resetGameOver();
       }
     },    
@@ -169,13 +165,10 @@ export default {
           }else{
               this.$refs.gameOverModalRef.hide();
           }
-
-
         },
         deep: true
       },
       created() {
-        //O metodo mounted() vai ser executado quando a página estiver pronta
         this.user = this.$store.getters.getUser;
         this.isLoggedIn = this.user.token != null && this.user.token != undefined;
     },

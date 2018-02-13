@@ -3,7 +3,49 @@
 	<div class="jumbotron">
 			<h1>{{ title }}</h1>
 		</div>
+
+
+	<b-table striped hover :items="users" 
+	  :fields="fieldsForUsers" :per-page="5" :current-page="currentTablePage">
+	  	<template slot="blocked" slot-scope="row">
+	  		{{row.item.blocked ? 'Yes' : 'No'}}
+	    </template>
+	  	<template slot="actions" slot-scope="row">
+			<b-button v-if="isNotAdminAndNotBlocked(row.item)" v-on:click="setBlockPressed(row)" 
+				variant="warning">Block</b-button>
+			<b-button v-else-if="!row.item.admin" v-on:click="setUnblockPressed(row)" 
+				variant="success">Unblock</b-button>
+			<b-button v-on:click="showDetails(row.item)" 
+				variant="primary">Details</b-button>
+			<b-button v-if="!row.item.admin" v-on:click="deleteUser(row.item)"
+			 variant="danger">Delete</b-button>
+	    </template>
+		<template slot="row-details" slot-scope="row">
+	      <b-card>
+    		<div v-if="blockPressed">
+				<b-form-textarea 
+					v-model="reasonBlocked"
+					placeholder="Please, add a reason to block user."
+                	:rows="2"
+                	:max-rows="3"></b-form-textarea>
+				<b-button variant="secondary" v-on:click="blockUser(currentUser)">Save</b-button>
+			</div>
+
+		<!--Mostra a area de texto para adicionar o motivo de desbloqueio do user -->
+			<div v-if="unblockPressed">
+				<b-form-textarea 
+					v-model="reasonUnblocked"
+					placeholder="Please, add a reason to unblock user."
+                    :rows="2"
+                    :max-rows="3"></b-form-textarea>
+				<b-button variant="secondary" v-on:click="unblockUser(currentUser)">Save</b-button>
+			</div>
+	      </b-card>
+	    </template>
+	  </b-table>
+	  <b-pagination :total-rows="users.length" :per-page="5" v-model="currentTablePage" class="my-0" />
 		
+		<!--
 	<table class="table table-striped">
 	    <thead>
 	        <tr>
@@ -25,14 +67,7 @@
 	            <td v-else>No</td>
 
 	            <td>
-	            	<!--
-	                <a v-if="isNotAdminAndNotBlocked(user)" class="btn btn-xs btn-warning" v-on:click.prevent="setBlockPressed(user)">Block</a>
-	                <a v-else-if="!user.admin" class="btn btn-xs btn-primary" v-on:click.prevent="setUnblockPressed(user)">Unblock</a>
-	                
-	                <a class="btn btn-xs btn-primary" v-on:click.prevent="showDetails(user)">Details</a>
-	                <a v-if="!user.admin" class="btn btn-xs btn-danger" v-on:click.prevent="deleteUser(user)">Delete</a>
-					-->
-
+	            	
 					<b-button v-if="isNotAdminAndNotBlocked(user)" v-on:click="setBlockPressed(user)" 
 						variant="warning">Block</b-button>
 					<b-button v-else-if="!user.admin" v-on:click="setUnblockPressed(user)" 
@@ -44,27 +79,30 @@
 	            </td>
 	        </tr>
 	    </tbody>
-	</table>
+	</table>-->
 
 <!--Mostra a area de texto para adicionar o motivo de bloqueio do user -->
-	<div v-if="blockPressed">
+	<!--<div v-if="blockPressed">
 						<textarea 
 						v-model="reasonBlocked"
 						placeholder="Please, add a reason to block user."></textarea>
 						<button type="button" class="close-btn" v-on:click="blockUser(currentUser)">Save</button>
-	</div>
+	</div>-->
 
-<!--Mostra a area de texto para adicionar o motivo de bloqueio do user -->
-	<div v-if="unblockPressed">
+<!--Mostra a area de texto para adicionar o motivo de desbloqueio do user -->
+	<!--<div v-if="unblockPressed">
 						<textarea 
 						v-model="reasonUnblocked"
 						placeholder="Please, add a reason to unblock user."></textarea>
 						<button type="button" class="close-btn" v-on:click="unblockUser(currentUser)">Save</button>
-	</div>
+	</div>-->
 	
 
   <b-alert v-if="showSuccess" show dismissible variant="success">
     {{ successMessage }}
+  </b-alert>
+  <b-alert v-if="showError" show dismissible variant="danger">
+    {{ errorMessage }}
   </b-alert>
 
 </div>
@@ -79,80 +117,106 @@
 		props: ['users', 'user', 'serverIp'],
 		data: function(){
 			return { 
-				/*user: {
-					name: '',
-					nickname: '',
-					email: '',
-					blocked: '',
-					admin: 0
-			
-				},*/
 				title: 'List Users',
 				detailsUser: null,
 				showSuccess: false,
+				showError: false,
 		        successMessage: '',
 		        blockPressed: false,
 		        unblockPressed: false,
 		        currentUser: null,
 		        reasonBlocked: '',
-		        reasonUnblocked: ''
-			}
+		        reasonUnblocked: '',
+		        fieldsForUsers: [
+					{
+						key: 'id',
+						sortable: true
+					},
+					{
+						key: 'name',
+						sortable: true
+					},
+					{
+						key: 'email',
+						sortable: true
+					},
+					{
+						key: 'nickname',
+						sortable: true
+					},
+					{
+						key: 'blocked',
+						sortable: true
+					},
+					{
+						key: 'actions',
+						sortable: true
+					}],
+				currentTablePage: 1
+			}	        	
 		},
-
-
-//TODO - nos metodos block e unblock e delete impedir que o admin possa fazer isso a ele pp
-
         methods: {
             blockUser: function(user){
-            	this.axios.put(this.serverIp + '/api/admin/block/user/' +user.id, 
+            	if(!this.reasonBlocked){
+            		this.showError = true;
+            		this.errorMessage = 'You must fill a reason!';
+            		return;
+            	}
+            	this.axios.put(this.serverIp + '/api/admin/users/block/' +user.id, 
             		{reason_blocked: this.reasonBlocked}, 
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	//Object.assign(this.user, response.data.data);
 	                	this.blockedUser();
 		                	console.log(response);
+                		this.$emit('refresh-users');
 	                });
 	                this.blockPressed = false;
 	                this.currentUser = null;
 	               
             },
             unblockUser: function(user){
-            	this.axios.put(this.serverIp + '/api/admin/unblock/user/' +user.id,
+            	if(!this.reasonUnblocked){
+            		this.showError = true;
+            		this.errorMessage = 'You must fill a reason!';
+            		return;
+            	}
+            	this.axios.put(this.serverIp + '/api/admin/users/unblock/' +user.id,
             		{reason_reactivated: this.reasonUnblocked},  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	//Object.assign(this.user, response.data.data);
 	                	this.unblockedUser();
 		                	console.log(response);
+                		this.$emit('refresh-users');
 	                });
 	                this.unblockPressed = false;
 	                this.currentUser = false;
 	        },
             deleteUser: function(user){
-    /*        	this.axios.interceptors.request.use(request => {
-  console.log('Starting Request', request)
-  return request
-})*/
-            	console.log(this.user.token)
-            	console.log(this.user)
-            	this.axios.delete(this.serverIp + '/api/admin/delete/user/' +user.id,  
+            	//console.log(this.user.token)
+            	//console.log(this.user)
+            	this.axios.delete(this.serverIp + '/api/admin/users/' +user.id,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	Object.assign(this.user, response.data.data);
 	                	this.deletedUser();
 		                	console.log(response);
+                		this.$emit('refresh-users');
 	                });
-
-                //this.$emit('delete-click', user);
 			},
-			setBlockPressed(user){
+			setBlockPressed(row){
+				row.toggleDetails();
 				this.blockPressed = true;
-				this.currentUser = user;
+				this.currentUser = row.item;
+		        this.reasonBlocked = '';
 
 			},
-			setUnblockPressed: function(user){
+			setUnblockPressed: function(row){
+				row.toggleDetails();
 				this.unblockPressed = true;
-				this.currentUser = user;
+				this.currentUser = row.item;
+		        this.reasonUnblocked = '';
 			},
 			blockedUser: function(){
 				this.showSuccess = true;
@@ -171,7 +235,6 @@
 	            this.successMessage = 'User Deleted';
 	        },
 	        isNotAdminAndNotBlocked: function(user){
-	        //	console.log(user.id, user.admin);
           		return !user.blocked && !user.admin == 1 ;
       		}
         }		

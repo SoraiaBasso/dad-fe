@@ -60,8 +60,6 @@
 	    <div class="form-group">
 	        <a class="btn btn-primary" v-on:click.prevent="saveUser()">Save</a>
 	       
-<!--
-	        <a class="btn btn-default" v-on:click.prevent="cancelEdit()">Cancel</a> -->
 	    </div>
 	</div>
 </template>
@@ -93,8 +91,6 @@
 	                	this.showSuccess = true;
 	            		this.successMessage = 'User Saved';
 
-	           
-
 	                }).catch(error => {
 						console.log(error.response);
 						this.showError = true;
@@ -105,16 +101,7 @@
 							+ ", Message: " + error.response.statusText;
 						}
 	                });
-	        }
-	      /*  cancelEdit: function(){
-	        	axios.get('api/users/'+this.user.id)
-	                .then(response=>{
-	                	// Copy object properties from response.data.data to this.user
-	                	// without creating a new reference
-	                	Object.assign(this.user, response.data.data);
-	                	this.$emit('user-canceled', this.user);
-	                });
-	        }*/
+	        }	     
 		}
 	}
 </script>

@@ -5,10 +5,7 @@
 			
   			<h4><b-badge variant="warning">Team 1 points: {{game.team1_cardpoints}}</b-badge></h4>
   			<h4><b-badge variant="warning">Team 2 points: {{game.team2_cardpoints}}</b-badge></h4>
-			<div>
- 
-  
-</div>
+			
 		</div>
 
 
@@ -19,8 +16,7 @@
         		:header="teammate.nickname" 
         		:footer="'Team: ' + teammate.teamId" 
                 bg-variant="light"
-                class="text-center"
-		        >
+                class="text-center">
 
 			<template v-for="index in teammate.cardCount">
 				<img height="80" width="60" :src="'data:image/png;base64, ' + hiddenFace">
@@ -37,18 +33,17 @@
         		:header="leftOpponent.nickname"
         		:footer="'Team: ' + leftOpponent.teamId" 
                 bg-variant="light"
-                class="text-center"
-		        >
+                class="text-center">
 			<template v-for="index in leftOpponent.cardCount">
 				<img height="80" width="60" :src="'data:image/png;base64, ' + hiddenFace">
 			</template>
 
         </b-card>
+
         <b-card header="Table"
         		:footer="'Trump owner: ' + trumpOwnerNickname + ' ' + ' SUITE: '  + chosenTrump.cardSuite" 
                 bg-variant="light"
-                class="text-center"
-		        >
+                class="text-center">
 
 			<b-container class="p-4 bg-dark">
 			  <b-row>
@@ -57,6 +52,9 @@
             		:src="'data:image/png;base64, ' + tableCards.top">
 			    </b-col>
 			  </b-row>
+
+			  <br>
+
 			  <b-row>
 			    <b-col>
             		<img v-if="tableCards.left" height="80" width="60" 
@@ -72,6 +70,9 @@
             		:src="'data:image/png;base64, ' + tableCards.right">
 			    </b-col>
 			  </b-row>
+
+			  <br>
+
 			  <b-row>
 			    <b-col>
             		<img v-if="tableCards.down" height="80" width="60" 
@@ -79,26 +80,14 @@
 			    </b-col>
 			  </b-row>
 			</b-container>
-<!--
 
-            <img v-if="tableCards.top" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.top">
-            <br>
-            <img v-if="tableCards.left" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.left">
-            <img height="80" width="60" :src="'data:image/png;base64, ' + chosenTrump.cardImage" 
-            v-on:click="playTrumpCard()" v-if="!game.cardTrump.played">
-            <span v-else>Trump already played!</span>
-            <img v-if="tableCards.right" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.right">
-            <br>
-            <img v-if="tableCards.down" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.down">
--->
         </b-card>
 
         <b-card :header-bg-variant="rightOpponent.id==game.currentPlayerId ? 'success' : 'light'"
         		:header="rightOpponent.nickname"
         		:footer="'Team: ' + rightOpponent.teamId" 
                 bg-variant="light"
-                class="text-center"
-		        >
+                class="text-center">
 			<template v-for="index in rightOpponent.cardCount">
 				<img height="80" width="60" :src="'data:image/png;base64, ' + hiddenFace">
 			</template>
@@ -114,7 +103,7 @@
         		:header="user.nickname"
         		:footer="'Team: ' + teammate.teamId" 
                 class="text-center">
-<!-- o metodo playCard() é chamado ao clicar na carta do utilizador logado-->
+		<!-- o metodo playCard() é chamado ao clicar na carta do utilizador logado-->
 			<template v-for="card, key in ownCards">
 				<img height="80" width="60" :src="'data:image/png;base64, ' + card.cardImage" v-on:click="playCard(card)">
 
@@ -125,10 +114,6 @@
         </b-card>
     </b-card-group>
   
-
-
-			
-
 </div>
 </template>
 
@@ -203,20 +188,14 @@
 		        			this.rightOpponent.id = otherUser.id;
 		        			this.rightOpponent.teamId = otherUser.teamId;
 	        			}
-
-
 	        		}
-
 	        	}
-	        	console.log(users);
-	        	console.log("loggedUser", loggedUser);
-	        	console.log("this.teammate", this.teammate);
-	        	console.log("this.leftOpponent", this.leftOpponent);
-	        	console.log("this.rightOpponent", this.rightOpponent);
-
-
-
-	        }, //metodo para ir buscar a imagem da carta
+	        	//console.log(users);
+	        	//console.log("loggedUser", loggedUser);
+	        	//console.log("this.teammate", this.teammate);
+	        	//console.log("this.leftOpponent", this.leftOpponent);
+	        	//console.log("this.rightOpponent", this.rightOpponent);
+	        }, //Método para ir buscar a imagem da carta
 	        getImageForCard: function(card, cardsToRequest){
 	        	var alreadyHasCardImage = false; 
 	        	//percorrer tds os decks do array de imagens
@@ -224,7 +203,7 @@
 					var deck = this.cardImages[j];
 					//se encontrar o deck
 					if(deck.deckId == this.game.deck_used){
-						//percorre todas as imagens e se encontrar uma carta com o mesmo valor poe a imagem na carta
+						//percorre todas as imagens e se encontrar uma carta com o mesmo valor põe a imagem na carta
 						for (var l = 0; l < deck.cards.length; l++) {
 							var cardImage = deck.cards[l];
 							if (cardImage.value == card.cardValue &&
@@ -234,8 +213,6 @@
 								break;
 							}
 						}
-
-
 					}
 				}
 				//se nao encontrar a imagem, junta ao array para pedir 
@@ -243,11 +220,10 @@
 					cardsToRequest.push(card);
 				}
 				return cardsToRequest;
-	        }, //percorre todas as cartas e faz set às imagens
+	        }, //Percorre todas as cartas e faz set às imagens
 	        setOwnCards: function(firstTime){
 	        	//console.log('GAME DO JOGADOR');
 	        	//console.log(this.game);
-
 				var cardsToRequest = [];
 
 		    	if(this.hiddenFace == ''){
@@ -268,7 +244,6 @@
 
 		        		}
 
-						//TODO: ver se tem carta no array
 					var tableCard = this.game.table[this.game.users[i].id];
 	        		//console.log('tableCard');
 	        		//console.log(tableCard);
@@ -280,7 +255,7 @@
 						this.setTableCardImg({cardImage: ''}, this.game.users[i].id);
 					}
 
-					//se o user for o proprio, faz set às suas cartas
+					//se o user for o próprio, faz set às suas cartas
 	        		if(this.user.id == this.game.users[i].id){
 	        			
 	        			console.log('This is user:', this.user.id);
@@ -290,8 +265,6 @@
 	        			/*console.log('Card Suite:', this.game.users[i].cards[0].cardSuite);
 	        			console.log('Card Value:', this.game.users[i].cards[0].cardValue);*/
 	        			//this.ownCards = this.game.users[i].cards;
-
-
     					this.ownCards.splice(0, this.ownCards.length); //faz reset ao array
 						this.ownCards.push.apply(this.ownCards, this.game.users[i].cards);
 
@@ -307,8 +280,6 @@
 				console.log('GAME TRUMP')
 				console.log(this.game.cardTrump.trumpCard.cardSuite);
 			
-
-				//TODO: ver se tem carta no array
 				if(this.chosenTrump.cardImage == ''){
 					this.chosenTrump.cardSuite = this.game.cardTrump.trumpCard.cardSuite;
 					this.chosenTrump.cardValue = this.game.cardTrump.trumpCard.cardValue;
@@ -330,7 +301,6 @@
 
 	        	this.updateGame(card, this.user.id, this.game.id);
 
-
 	        },
 	        playTrumpCard: function() {
 
@@ -338,7 +308,6 @@
 	        	//console.log(card);
 
 	        	this.updateGame(this.chosenTrump, this.user.id, this.game.id);
-
 
 	        },
 	        updateGame: function(card, userId, gameId){
@@ -359,7 +328,7 @@
 	        setTableCardImg: function(card, userId){
 	        	//mapeia as posicoes do jogadores para a mesa
 	        	switch(userId) {
-	        		//se o id recebido for do teammate, poe a carta n topo
+	        		//se o id recebido for do teammate, poe a carta no topo
 				    case this.teammate.id:
 				    	this.tableCards.top = card.cardImage;
 				        break;
@@ -375,7 +344,6 @@
 				}
 	        },
 	        cleanTable: function(){
-	        	//ENVIAR O PEDIDO PARA O SERVIDOR LIMPAR A MESA
 	        	this.$root.cleanTable(this.game.id, this.user.id);
 	        },
 	        setIsCleanTable: function() {
@@ -408,22 +376,17 @@
 		    		}
 
 		    	}
-		    	console.log('COUNT')
-		    	console.log('COUNT')
-		    	console.log('COUNT')
-		    	console.log('COUNT = ', count)
-		    	console.log('THIS USER ID')
-		    		console.log(this.user.id)
-		    		console.log('CURRENT PLAYER ID')
-		    		console.log(this.game.currentPlayerId)
-
-	        
+		    
+		    	console.log('COUNT = ', count);
+		    	console.log('THIS USER ID');
+	    		console.log(this.user.id);
+	    		console.log('CURRENT PLAYER ID');
+	    		console.log(this.game.currentPlayerId);
 	        },
 	        suspect: function(){
 		    	console.log('A Enviar Suspeita...');
 	        	this.$root.suspect(this.game.id, this.user.id);
 	        },
-
 
 		}, 
 		watch: {
@@ -436,18 +399,7 @@
 
 		    },
 		    cardImages() {
-				this.setOwnCards(false);
-		    	/*
-		    	if(this.chosenTrump.cardImage == ''){
-		    		this.getImageForCard(this.chosenTrump);
-		    	}
-
-
-	        	for (var i = 0; i < this.ownCards.length; i++) {
-	        		var ownCard = this.ownCards[i];
-		    		this.getImageForCard(ownCard);
-	        	}
-				*/
+				this.setOwnCards(false);	    	
 		    },
      		deep: true
 		},
@@ -455,9 +407,7 @@
 			this.setOtherPlayers();
 			this.setOwnCards(true);
 			this.setIsCleanTable();
-
 	    }
-
 	}
 </script>
 

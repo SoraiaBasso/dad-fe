@@ -71,12 +71,10 @@
 	                	console.log(this.user);
 	                	console.log(response.data);
 	                	Object.assign(this.user, response.data);
-	                	//window.token = response.data.token; //O window é para a variavel ser global
+
 	                	this.user.token = response.data.token;
 
-	                	//Linha 26 do App.vue. Emite o event is-logged e faz o metodo que la esta
 	                	this.$emit('is-logged', true);
-	                	//o push faz com que se vá para aquela rota
 	                	this.$root.saveUser(this.user);
 
 	                	this.$root.initSocket();
@@ -129,8 +127,7 @@
 		        		this.isForgotPasswordPressed = false;
 		        	} else {
 		        		this.isForgotPasswordPressed = true;
-		        	}
-		        	
+		        	}		        	
 	        	}
 	        },
 	        mounted() {

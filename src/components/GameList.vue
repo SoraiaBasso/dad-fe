@@ -15,12 +15,13 @@
 	        </tr>
 	    </thead>
 	    <tbody>
-	        <tr v-for="game in pendingGames"  :key="game.id"> <!--var key serve para referenciar a linha que esta seleccionada -->
+	        <tr v-for="game in pendingGames"  :key="game.id"> 
+
 	        	<td>{{ game.id }}</td>
 	            <td>{{ game.total_players }}</td>
 	            <td>{{ game.created_by.nickname }}</td>
 	            <td>{{ game.created_at | formatDate }}</td> 
-	            <!-- b-button é igual a button, as cores é que são diferentes -->
+
   				<b-button variant="success" 
   					v-if="isCreator(game.created_by.nickname)"
   					:disabled="game.total_players < 4" 
@@ -38,8 +39,6 @@
 				<b-button variant="primary" 
 	            	v-else 
 	            	v-on:click="joinGame(game.id)">Join Game</b-button>
-	            
-
 	        </tr>
 	    </tbody>
 	</table>
@@ -66,7 +65,6 @@
 	        		if(this.user.id == user.id){
 	        			return true;
 	        		}
-
 	        	}
 	        	return false;
 	        },
@@ -75,7 +73,6 @@
 	        },
 	        startGame: function(gameId){
 	        	this.$root.startGame(gameId);
-	        	//this.$root.getFirstPlayer(gameId);
 	        },
 	        removeGame: function(gameId){
 	        	this.$root.removeGame(gameId);
