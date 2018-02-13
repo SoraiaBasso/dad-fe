@@ -1,8 +1,8 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 //varivel que contem o ip do servidor
-//const serverIp = "http://46.101.25.53:8080";
-const serverIp = "http://localhost:7555";
+const serverIp = "http://46.101.25.53:8080";
+//const serverIp = "http://localhost:7555";
 
 
 import Vue from 'vue';
