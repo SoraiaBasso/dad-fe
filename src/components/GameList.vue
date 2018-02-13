@@ -25,6 +25,9 @@
   					v-if="isCreator(game.created_by.nickname)"
   					:disabled="game.total_players < 4" 
 	            	v-on:click="startGame(game.id)">Start Game</b-button>
+  				<b-button variant="warning" 
+  					v-if="isCreator(game.created_by.nickname)"
+	            	v-on:click="removeGame(game.id)">Remove Game</b-button>
 	            <b-button variant="primary" 
 	            	v-else-if="isJoined(game.users)" 
 	            	disabled
@@ -73,6 +76,9 @@
 	        startGame: function(gameId){
 	        	this.$root.startGame(gameId);
 	        	//this.$root.getFirstPlayer(gameId);
+	        },
+	        removeGame: function(gameId){
+	        	this.$root.removeGame(gameId);
 	        }
 		}
 

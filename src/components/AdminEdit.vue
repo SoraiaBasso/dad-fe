@@ -7,7 +7,7 @@
 	    <div class="form-group">
 	        <label for="inputNickname">Nickname</label>
 	        <input
-	            type="text" class="form-control" v-model="user.nickname"
+	            type="text" class="form-control" v-model="adminUpdated.nickname"
 	            name="nickname" id="inputNickname" 
 	            placeholder="Nickname"/>
 	    </div>
@@ -15,7 +15,7 @@
 	    <div class="form-group">
 	        <label for="inputEmail">Administrator Email</label>
 	        <input v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }"
-	            type="email" class="form-control" v-model="user.email"
+	            type="email" class="form-control" v-model="adminUpdated.email"
 	            name="email" id="inputEmail"
 	            placeholder="Adminstrator email"/>
 	             <span v-show="errors.has('email')" class="text-danger">{{ errors.first('email') }}</span>
@@ -161,6 +161,11 @@
 		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
+				adminUpdated: {
+						nickname: '',
+						email: '',
+				
+					},
 				config: {
 				platform_email: ''
 				},
@@ -185,13 +190,15 @@
 	    methods: {
 	        saveUser: function(){
 	            this.axios.put(this.serverIp +'/api/admin/edit/' +this.user.id,
-	            	this.user,  
+	            	this.adminUpdated,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
 	                	//Object.assign(this.user, response.data.data);
 	                	this.savedUser();
+	                	this.user.nickname = this.adminUpdated.nickname;
+	                	this.user.email = this.adminUpdated.email;
 
-		                	console.log(response);
+		                console.log(response);
 	                });
 	                if(this.isChangePassword){
 	                	//console.log(this.newPassword, this.oldPassword, this.password_confirmation);
@@ -309,11 +316,15 @@ this.axios.interceptors.request.use(request => {
 					  console.log(error);
 
 				});
+	        },
+	        cancelEdit: function(){
+	            this.$router.push('/');
 	        }
 		}, 
 		mounted() {
 			//this.getUserByToken();
 			this.getConfigDetails();
+			Object.assign(this.adminUpdated, this.user);
 
 			for(let a = 0; a < this.cardSuites.length; a++) {
 				for(let i = 0; i < this.cardOptions.length; i++) {

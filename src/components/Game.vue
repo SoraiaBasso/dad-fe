@@ -50,16 +50,47 @@
                 class="text-center"
 		        >
 
+			<b-container class="p-4 bg-dark">
+			  <b-row>
+			    <b-col>
+            		<img v-if="tableCards.top" height="80" width="60" 
+            		:src="'data:image/png;base64, ' + tableCards.top">
+			    </b-col>
+			  </b-row>
+			  <b-row>
+			    <b-col>
+            		<img v-if="tableCards.left" height="80" width="60" 
+            		:src="'data:image/png;base64, ' + tableCards.left">
+			    </b-col>
+			    <b-col>
+		            <img height="80" width="60" :src="'data:image/png;base64, ' + chosenTrump.cardImage" 
+		            v-on:click="playTrumpCard()" v-if="!game.cardTrump.played">
+		            <span v-else class="text-light">Trump already played!</span>
+			    </b-col>
+			    <b-col>
+            		<img v-if="tableCards.right" height="80" width="60" 
+            		:src="'data:image/png;base64, ' + tableCards.right">
+			    </b-col>
+			  </b-row>
+			  <b-row>
+			    <b-col>
+            		<img v-if="tableCards.down" height="80" width="60" 
+            		:src="'data:image/png;base64, ' + tableCards.down">
+			    </b-col>
+			  </b-row>
+			</b-container>
+<!--
+
             <img v-if="tableCards.top" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.top">
             <br>
             <img v-if="tableCards.left" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.left">
             <img height="80" width="60" :src="'data:image/png;base64, ' + chosenTrump.cardImage" 
             v-on:click="playTrumpCard()" v-if="!game.cardTrump.played">
-            <span v-else>Trump already played: {{chosenTrump.cardSuite}}</span>
+            <span v-else>Trump already played!</span>
             <img v-if="tableCards.right" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.right">
             <br>
             <img v-if="tableCards.down" height="80" width="60" :src="'data:image/png;base64, ' + tableCards.down">
-
+-->
         </b-card>
 
         <b-card :header-bg-variant="rightOpponent.id==game.currentPlayerId ? 'success' : 'light'"
@@ -90,7 +121,7 @@
 	        </template>
 
 	        <b-button v-if='isCleanTable' variant="primary" v-on:click="cleanTable()">Clean table</b-button>
-	        <b-button variant="danger">Suspect</b-button>
+	        <b-button variant="danger" v-on:click="suspect()">Suspect</b-button>
         </b-card>
     </b-card-group>
   
@@ -387,7 +418,11 @@
 		    		console.log(this.game.currentPlayerId)
 
 	        
-	        }
+	        },
+	        suspect: function(){
+		    	console.log('A Enviar Suspeita...');
+	        	this.$root.suspect(this.game.id, this.user.id);
+	        },
 
 
 		}, 
@@ -396,6 +431,7 @@
 		    	this.setIsCleanTable();
 
 		    	console.log('Game Changed!');
+				this.setOtherPlayers();
 				this.setOwnCards(true);
 
 		    },

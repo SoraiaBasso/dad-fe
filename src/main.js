@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 //varivel que contem o ip do servidor
 const serverIp = "http://46.101.25.53:8080";
+//const serverIp = "http://localhost:7555";
 
 
 import Vue from 'vue';
@@ -20,7 +21,10 @@ Vue.use(VueAxios, axios);
 
 import VeeValidate from 'vee-validate';
 
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {fieldsBagName: 'formFields'})
+
+import Paginate from 'vuejs-paginate'
+Vue.component('paginate', Paginate)
 
 
 import Vuex from 'vuex'
@@ -29,6 +33,9 @@ import {
 } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import * as Cookies from 'js-cookie'
+
+
+
 
 Vue.use(Vuex);
 
@@ -52,6 +59,7 @@ import AdminEdit from '@/components/AdminEdit'
 import Login from '@/components/Login'
 import Lobby from '@/components/Lobby'
 import Decks from '@/components/Decks'
+import PasswordReset from '@/components/PasswordReset'
 
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -99,6 +107,10 @@ const routes = [{
 	path: '/decks/',
 	name: 'Decks',
 	component: Decks
+}, {
+	path: '/passwordReset/:resetToken',
+	name: 'PasswordReset',
+	component: PasswordReset
 }]
 
 const router = new VueRouter({
@@ -145,6 +157,7 @@ const store = new Vuex.Store({
 const pendingGames = [];
 const activeGames = [];
 const cardImages = [];
+var gamesOver = [];
 
 
 function initListeners(s) {
@@ -222,6 +235,21 @@ function initListeners(s) {
 		console.log("Imagens das cartas recebidas no main:", cardImages[0]);*/
 
 	});
+	s.on('gameOver', function(data) {
+		//receber os games que vieram no canal
+		console.log('data')
+		console.log(data)
+		//gameOver = data.game;
+		gamesOver.splice(0, gamesOver.length);
+
+		let gameOver = data.game;
+		gameOver.teamWinner = data.teamWinner;
+		gamesOver.push(gameOver);
+
+		//activeGames.splice(0, activeGames.length); //faz reset ao array
+		//activeGames.push.apply(activeGames, data.games);
+		//console.log("Active Games:", activeGames);
+	});
 }
 
 
@@ -234,7 +262,8 @@ var vm = new Vue({
 		pendingGames: pendingGames, //a variavel e declarada nesta instancia ja inicializada com os valores recebidos
 		activeGames: activeGames,
 		cardImages: cardImages,
-		serverIp: serverIp
+		serverIp: serverIp,
+		gamesOver: gamesOver
 	},
 	template: '<App/>',
 	components: {
@@ -298,6 +327,12 @@ var vm = new Vue({
 
 			//socket.emit('fisrtPlayer', {gameId:gameId}); 
 		},
+		removeGame(gameId) {
+			socket.emit('removePendingGame', {
+				gameId: gameId,
+				userId: store.getters.getUser.id
+			});
+		},
 		getCardImg(deckId, ownCards) {
 			socket.emit('getCards', {
 				deckId: deckId,
@@ -307,6 +342,12 @@ var vm = new Vue({
 		cleanTable(gameId, userId) {
 			socket.emit('cleanTable', {gameId: gameId, userId: userId});
 
+		},
+		suspect(gameId, userId) {
+			socket.emit('suspect', {gameId: gameId, userId: userId});
+		},
+		resetGameOver() {
+			gamesOver.splice(0, gamesOver.length);
 		}	
 	}
 })

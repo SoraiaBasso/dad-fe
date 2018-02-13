@@ -29,6 +29,12 @@
       </b-navbar-nav>
         </b-collapse>
   </b-navbar>
+      <b-modal ref="gameOverModalRef" id="myModal" hide-footer>
+        {{computedMessage}}
+      <b-btn class="mt-3" variant="outline-success" block @click="resetGameOver">Close</b-btn>
+
+  </b-modal>
+
 
   <!-- O :user serve para passar a variavel user (declarade neste componente pai) para os componentes filhos
   essa var tem que ser declarada nos props[] do filho que a vai usar -->
@@ -53,7 +59,45 @@ export default {
         activeGames: this.$root.activeGames,
         cardImages: this.$root.cardImages,
         serverIp: this.$root.serverIp,
+        gamesOver: this.$root.gamesOver,
         isLoggedIn:false}
+    },
+    computed: {
+      computedMessage: function () {
+        var msg = '';
+        if(this.gamesOver.length) {
+          var gameOver = this.gamesOver[0];
+          var userWon = false;
+
+          for (var i = 0; i < gameOver.users.length; i++) {
+            var userAux = gameOver.users[i];
+            if(userAux.id == this.user.id &&
+              userAux.teamId == gameOver.teamWinner){
+              userWon = true;
+              break;
+            }
+          }
+          var wonMessage = '';
+          if(userWon){
+            wonMessage = "You Won! ";
+          }else{
+            wonMessage = "You lost... ";
+          }
+
+          msg = "Game " + gameOver.id + " is over."+
+          wonMessage+"\nTeam 1 Card Points: " + gameOver.team1_cardpoints +
+          ". Team 2 Card Points: " + gameOver.team2_cardpoints;
+
+          if(gameOver.team1_cheating){
+            msg += "\n Team 1 Cheated!";
+          }
+          if(gameOver.team2_cheating){
+            msg += "\n Team 2 Cheated!";
+          }
+
+        }
+        return msg;
+      }
     },
     methods: {
       doLogout: function() {
@@ -110,7 +154,26 @@ export default {
       isLoggedInAndNotAdmin: function(flag){
           return this.isLoggedIn && this.user.admin == 0; 
       },
-    },
+      resetGameOver () {
+        //Object.assign(this.gameOver, {});
+        //this.$refs.gameOverModalRef.hide();
+        this.$root.resetGameOver();
+      }
+    },    
+    watch: {
+        gamesOver() {
+          console.log("gameOver watch");
+          console.log(this.gamesOver);
+          if(this.gamesOver.length) {
+              this.$refs.gameOverModalRef.show();
+          }else{
+              this.$refs.gameOverModalRef.hide();
+          }
+
+
+        },
+        deep: true
+      },
       created() {
         //O metodo mounted() vai ser executado quando a página estiver pronta
         this.user = this.$store.getters.getUser;

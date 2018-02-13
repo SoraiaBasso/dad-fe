@@ -4,14 +4,14 @@
 	    <div class="form-group">
 	        <label for="inputName">Name</label>
 	        <input
-	            type="text" class="form-control" v-model="user.name"
+	            type="text" class="form-control" v-model="userUpdated.name"
 	            name="name" id="inputName" 
 	            placeholder="Fullname"/>
 	    </div>
 	    <div class="form-group">
 	        <label for="inputNickname">Nickname</label>
 	        <input
-	            type="text" class="form-control" v-model="user.nickname"
+	            type="text" class="form-control" v-model="userUpdated.nickname"
 	            name="nickname" id="inputNickname" 
 	            placeholder="Nickname"/>
 	    </div>
@@ -19,7 +19,7 @@
 	    <div class="form-group">
 	        <label for="inputEmail">Email</label>
 	        <input v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }"
-	            type="email" class="form-control" v-model="user.email"
+	            type="email" class="form-control" v-model="userUpdated.email"
 	            name="email" id="inputEmail"
 	            placeholder="Email address"/>
 	             <span v-show="errors.has('email')" class="text-danger">{{ errors.first('email') }}</span>
@@ -68,12 +68,12 @@
 		props: ['user', 'serverIp'],
 		data: function(){
 			return { 
-			/*user: {
+			userUpdated: {
 					name: '',
 					nickname: '',
 					email: '',
 			
-				},*/
+				},
 				password: '',
 				showSuccess: false,
 		        successMessage: '',
@@ -83,14 +83,17 @@
 	    methods: {
 	        saveUser: function(){
 	            this.axios.put(this.serverIp + '/api/user/edit/' +this.user.id,
-	            	this.user,  
+	            	this.userUpdated,  
 	            	{ headers: { Authorization: "Bearer " + this.user.token } })
 	                .then(response=>{
-	                	Object.assign(this.user, response.data.data);
 	                	this.savedUser();
+	                	this.user.name = this.userUpdated.name;
+	                	this.user.nickname = this.userUpdated.nickname;
+	                	this.user.email = this.userUpdated.email;
 
 
-		                	console.log(response);
+		                console.log(response);
+
 	                });
 	                if(this.isChangePassword){
 		            this.axios.put(this.serverIp + '/api/user/edit/password/' +this.user.id,
@@ -131,11 +134,7 @@
 	                });
 	        },
 	        cancelEdit: function(){
-	        	axios.get(this.serverIp + 'api/users/'+this.user.id)
-	                .then(response=>{
-	                	Object.assign(this.user, response.data.data);
-	                	this.$emit('user-canceled', this.user);
-	                });
+	            this.$router.push('/');
 	        },
 	        getUserByToken: function(){
 	        	this.axios.get(this.serverIp + '/api/user/'+this.user.token, 
@@ -151,6 +150,7 @@
 		mounted() {
 	    	//O metodo mounted() vai ser executado quando a página estiver pronta
 			//this.getUserByToken();
+			Object.assign(this.userUpdated, this.user);
 		}
 
 	}
