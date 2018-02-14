@@ -208,6 +208,7 @@
 			setBlockPressed(row){
 				row.toggleDetails();
 				this.blockPressed = true;
+				this.unblockPressed = false;
 				this.currentUser = row.item;
 		        this.reasonBlocked = '';
 
@@ -215,6 +216,7 @@
 			setUnblockPressed: function(row){
 				row.toggleDetails();
 				this.unblockPressed = true;
+				this.blockPressed = false;
 				this.currentUser = row.item;
 		        this.reasonUnblocked = '';
 			},
